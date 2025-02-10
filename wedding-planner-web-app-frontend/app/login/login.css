@@ -116,7 +116,7 @@ h2 {
   color: white;
 }
 
-
+/* Style for select input for freelancer */
 .select-container {
   margin-bottom: 15px;
 }
@@ -128,7 +128,7 @@ h2 {
   font-size: 1rem;
 }
 
-
+/* Responsive Design */
 @media (max-width: 480px) {
   .auth-box {
     padding: 20px;
