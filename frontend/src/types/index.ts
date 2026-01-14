@@ -22,12 +22,16 @@ export interface ServiceType {
 export interface Booking {
     id: number;
     userId: number;
+    userName: string;
     vendorId: number;
+    vendorName: string;
     serviceId: number;
+    serviceTitle: string;
     startTime: string;
     endTime: string;
     status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
     createdAt: string;
+    chatRoomId?: number;
 }
 
 export interface DashboardStats {

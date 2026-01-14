@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
 import { Booking, DashboardStats } from "@/types";
 import { useRouter } from "next/navigation";
+import ChatWindow from "@/components/chat/ChatWindow";
 
 export default function DashboardPage() {
     const { user, isLoading } = useAuth();
@@ -12,6 +13,7 @@ export default function DashboardPage() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [dataLoading, setDataLoading] = useState(true);
+    const [activeChatRoom, setActiveChatRoom] = useState<number | null>(null);
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -106,7 +108,7 @@ export default function DashboardPage() {
                                     <th className="px-6 py-4 font-semibold">Service</th>
                                     <th className="px-6 py-4 font-semibold">{isVendor ? "Customer" : "Vendor"}</th>
                                     <th className="px-6 py-4 font-semibold">Date & Time</th>
-                                    <th className="px-6 py-4 font-semibold">Status</th>
+                                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/50">
@@ -127,8 +129,21 @@ export default function DashboardPage() {
                                                 {new Date(booking.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <StatusBadge status={booking.status} />
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <StatusBadge status={booking.status} />
+                                                {booking.chatRoomId && (
+                                                    <button
+                                                        onClick={() => setActiveChatRoom(booking.chatRoomId!)}
+                                                        className="p-2 text-indigo-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition"
+                                                        title="Open Chat"
+                                                    >
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                                        </svg>
+                                                    </button>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -144,6 +159,13 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
+
+            {activeChatRoom && (
+                <ChatWindow
+                    roomId={activeChatRoom}
+                    onClose={() => setActiveChatRoom(null)}
+                />
+            )}
         </div>
     );
 }

@@ -16,6 +16,9 @@ public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private com.weddingplanner.backend.repository.ChatRoomRepository chatRoomRepository;
+
     public List<Booking> getBookingsByUserId(Long userId) {
         return bookingRepository.findByUserId(userId);
     }
@@ -32,7 +35,17 @@ public class BookingService {
         }
 
         booking.setStatus(BookingStatus.PENDING);
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        // Auto-create chat room for the booking
+        com.weddingplanner.backend.model.ChatRoom chatRoom = com.weddingplanner.backend.model.ChatRoom.builder()
+                .booking(savedBooking)
+                .user(savedBooking.getUser())
+                .vendor(savedBooking.getVendor())
+                .build();
+        chatRoomRepository.save(chatRoom);
+
+        return savedBooking;
     }
 
     private boolean hasConflict(Long vendorId, LocalDateTime startTime, LocalDateTime endTime) {
