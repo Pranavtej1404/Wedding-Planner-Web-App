@@ -13,16 +13,20 @@ export default function RegisterPage() {
         role: "USER",
         phone: "",
     });
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError("");
         try {
             await api.post("/auth/signup", formData);
             router.push("/login");
         } catch (err: any) {
             setError(err.response?.data?.message || "Registration failed");
+            setLoading(false);
         }
     };
 
@@ -94,9 +98,10 @@ export default function RegisterPage() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full mt-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-lg shadow-lg transform active:scale-95 transition"
+                        disabled={loading}
+                        className="w-full mt-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-lg shadow-lg transform active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Register
+                        {loading ? "Registering..." : "Register"}
                     </button>
                 </form>
 

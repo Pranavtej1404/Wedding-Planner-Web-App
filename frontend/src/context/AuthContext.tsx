@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 interface User {
     id: number;
     email: string;
-    roles: string[];
+    name: string;
+    role: string;
 }
 
 interface AuthContextType {
@@ -40,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setToken(token);
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", token);
-        router.push("/");
+        router.push("/dashboard");
     };
 
     const logout = () => {

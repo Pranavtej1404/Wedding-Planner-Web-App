@@ -9,15 +9,19 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError("");
         try {
             const response = await api.post("/auth/signin", { email, password });
             login(response.data, response.data.token);
         } catch (err: any) {
             setError(err.response?.data?.message || "Invalid credentials");
+            setLoading(false);
         }
     };
 
@@ -56,9 +60,10 @@ export default function LoginPage() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-3 rounded-lg shadow-lg transform active:scale-95 transition"
+                        disabled={loading}
+                        className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-3 rounded-lg shadow-lg transform active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Sign In
+                        {loading ? "Signing In..." : "Sign In"}
                     </button>
                 </form>
 
