@@ -1,6 +1,7 @@
 package com.weddingplanner.backend.repository;
 
 import com.weddingplanner.backend.model.Booking;
+import com.weddingplanner.backend.model.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserId(Long userId);
 
     List<Booking> findByVendorId(Long vendorId);
+
+    long countByVendorIdAndStatusIn(Long vendorId, List<BookingStatus> statuses);
 
     // Naive conflict check: finds any booking for a vendor that overlaps with the
     // given time range

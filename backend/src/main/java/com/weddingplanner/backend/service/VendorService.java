@@ -19,8 +19,22 @@ public class VendorService {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    private final com.weddingplanner.algorithms.caching.LRUCache<String, List<Vendor>> recommendationCache = new com.weddingplanner.algorithms.caching.LRUCache<>(
+            100);
+
     public List<Vendor> getAllVendors() {
         return vendorRepository.findAll();
+    }
+
+    public List<Vendor> getRecommendations(String category) {
+        List<Vendor> cached = recommendationCache.get(category);
+        if (cached != null) {
+            return cached;
+        }
+
+        List<Vendor> vendors = vendorRepository.findByCategory(category);
+        recommendationCache.put(category, vendors);
+        return vendors;
     }
 
     public Optional<Vendor> getVendorById(Long id) {

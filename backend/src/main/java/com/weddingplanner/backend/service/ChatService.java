@@ -23,7 +23,14 @@ public class ChatService {
     @Autowired
     private UserRepository userRepository;
 
+    private final com.weddingplanner.algorithms.messaging.SpamDetector spamDetector = new com.weddingplanner.algorithms.messaging.SpamDetector(
+            5, 10000); // 5 messages per 10 seconds
+
     public Message saveMessage(Long chatRoomId, Long senderId, String content) {
+        if (spamDetector.isSpam(senderId)) {
+            throw new RuntimeException("Too many messages. Please wait a moment.");
+        }
+
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("Chat room not found"));
 

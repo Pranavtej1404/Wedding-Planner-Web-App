@@ -31,8 +31,27 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        seedAdmin();
         seedVendors();
         seedServices();
+    }
+
+    private void seedAdmin() {
+        String adminEmail = "admin@eternalvows.com";
+        if (userRepository.existsByEmail(adminEmail)) {
+            return;
+        }
+
+        User admin = User.builder()
+                .name("Platform Admin")
+                .email(adminEmail)
+                .password(passwordEncoder.encode("admin123"))
+                .role(Role.ADMIN)
+                .phone("000-000-0000")
+                .build();
+
+        userRepository.save(admin);
+        System.out.println("--- Data Seeding: Default Admin created ---");
     }
 
     private void seedVendors() {

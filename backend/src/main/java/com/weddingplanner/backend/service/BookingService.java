@@ -3,6 +3,7 @@ package com.weddingplanner.backend.service;
 import com.weddingplanner.backend.model.Booking;
 import com.weddingplanner.backend.model.BookingStatus;
 import com.weddingplanner.backend.repository.BookingRepository;
+import com.weddingplanner.backend.repository.VendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,9 @@ public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private VendorRepository vendorRepository;
 
     @Autowired
     private com.weddingplanner.backend.repository.ChatRoomRepository chatRoomRepository;
@@ -46,6 +50,19 @@ public class BookingService {
         chatRoomRepository.save(chatRoom);
 
         return savedBooking;
+    }
+
+    public Long assignLeastBusyVendor(String category) {
+        List<com.weddingplanner.backend.model.Vendor> vendors = vendorRepository.findByCategory(category);
+        java.util.List<com.weddingplanner.algorithms.scheduling.BookingLoadBalancer.VendorWorkload> workloads = vendors
+                .stream()
+                .map(v -> new com.weddingplanner.algorithms.scheduling.BookingLoadBalancer.VendorWorkload(
+                        v.getId(),
+                        bookingRepository.countByVendorIdAndStatusIn(v.getId(),
+                                java.util.Arrays.asList(BookingStatus.PENDING, BookingStatus.CONFIRMED))))
+                .collect(java.util.stream.Collectors.toList());
+
+        return com.weddingplanner.algorithms.scheduling.BookingLoadBalancer.getLeastBusyVendor(workloads);
     }
 
     private boolean hasConflict(Long vendorId, LocalDateTime startTime, LocalDateTime endTime) {

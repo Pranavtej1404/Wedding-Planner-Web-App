@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { Vendor } from "@/types";
 import Link from "next/link";
+import SearchBar from "@/components/discovery/SearchBar";
 
 export default function VendorsPage() {
     const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -37,6 +38,8 @@ export default function VendorsPage() {
                 <h1 className="text-4xl font-bold text-white mb-8 bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
                     Discover Premium Vendors
                 </h1>
+
+                <SearchBar />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {vendors.map((vendor) => (

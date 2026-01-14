@@ -6,6 +6,7 @@ import api from "@/lib/api";
 import { Vendor, ServiceType } from "@/types";
 import BookingModal from "@/components/booking/BookingModal";
 import Link from "next/link";
+import RecommendedVendors from "@/components/discovery/RecommendedVendors";
 
 export default function VendorDetailPage() {
     const { id } = useParams();
@@ -111,6 +112,8 @@ export default function VendorDetailPage() {
                         onSuccess={() => alert("Booking request sent successfully!")}
                     />
                 )}
+
+                <RecommendedVendors vendorId={Number(id)} />
             </div>
         </div>
     );
