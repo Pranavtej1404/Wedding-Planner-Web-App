@@ -44,8 +44,8 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String role = userDetails.getAuthorities().stream()
                 .findFirst()
-                .map(item -> item.getAuthority())
-                .orElse("ROLE_USER");
+                .map(item -> item.getAuthority().replace("ROLE_", ""))
+                .orElse("USER");
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),

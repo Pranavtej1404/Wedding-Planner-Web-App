@@ -27,13 +27,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const router = useRouter();
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        const storedToken = localStorage.getItem("token");
-        if (storedUser && storedToken) {
-            setUser(JSON.parse(storedUser));
-            setToken(storedToken);
+        try {
+            const storedUser = localStorage.getItem("user");
+            const storedToken = localStorage.getItem("token");
+            if (storedUser && storedToken) {
+                setUser(JSON.parse(storedUser));
+                setToken(storedToken);
+            }
+        } catch (err) {
+            console.error("Failed to restore session", err);
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }, []);
 
     const login = (userData: User, token: string) => {

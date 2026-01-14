@@ -18,8 +18,8 @@ services:
 
   backend:
     build:
-      context: ../backend
-      dockerfile: ../docker/backend.Dockerfile
+      context: ..
+      dockerfile: docker/backend.Dockerfile
     container_name: wp-backend
     ports:
       - "8080:8080"

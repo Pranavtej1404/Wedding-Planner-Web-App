@@ -54,7 +54,7 @@ export default function DashboardPage() {
                 <header className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                            Welcome back, {user?.name.split(" ")[0]}!
+                            Welcome back, {user?.name?.split(" ")[0] || "User"}!
                         </h1>
                         <p className="text-slate-400 mt-2">
                             {isVendor

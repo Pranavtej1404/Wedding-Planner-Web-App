@@ -36,8 +36,16 @@ public class BookingService {
     }
 
     private boolean hasConflict(Long vendorId, LocalDateTime startTime, LocalDateTime endTime) {
-        List<Booking> overlappingBookings = bookingRepository.findByVendorIdAndStartTimeBeforeAndEndTimeAfter(
-                vendorId, endTime, startTime);
-        return !overlappingBookings.isEmpty();
+        List<Booking> existingBookings = bookingRepository.findByVendorId(vendorId);
+
+        com.weddingplanner.algorithms.scheduling.IntervalTree tree = new com.weddingplanner.algorithms.scheduling.IntervalTree();
+        for (Booking b : existingBookings) {
+            // Only check against PENDING or CONFIRMED bookings
+            if (b.getStatus() == BookingStatus.PENDING || b.getStatus() == BookingStatus.CONFIRMED) {
+                tree.insert(b.getStartTime(), b.getEndTime());
+            }
+        }
+
+        return tree.hasOverlap(startTime, endTime);
     }
 }

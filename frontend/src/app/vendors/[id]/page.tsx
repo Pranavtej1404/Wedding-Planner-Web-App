@@ -5,12 +5,14 @@ import { useParams } from "next/navigation";
 import api from "@/lib/api";
 import { Vendor, ServiceType } from "@/types";
 import BookingModal from "@/components/booking/BookingModal";
+import Link from "next/link";
 
 export default function VendorDetailPage() {
     const { id } = useParams();
     const [vendor, setVendor] = useState<Vendor | null>(null);
     const [services, setServices] = useState<ServiceType[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
 
     useEffect(() => {
@@ -24,6 +26,7 @@ export default function VendorDetailPage() {
                 setServices(sRes.data);
             } catch (err) {
                 console.error("Failed to fetch data", err);
+                setError(true);
             } finally {
                 setLoading(false);
             }
@@ -31,10 +34,19 @@ export default function VendorDetailPage() {
         if (id) fetchData();
     }, [id]);
 
-    if (loading || !vendor) {
+    if (loading) {
         return (
             <div className="min-h-screen bg-slate-900 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            </div>
+        );
+    }
+
+    if (error || !vendor) {
+        return (
+            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+                <h1 className="text-2xl font-bold text-white mb-4">Vendor not found</h1>
+                <Link href="/vendors" className="text-indigo-400 hover:underline">Return to browse vendors</Link>
             </div>
         );
     }

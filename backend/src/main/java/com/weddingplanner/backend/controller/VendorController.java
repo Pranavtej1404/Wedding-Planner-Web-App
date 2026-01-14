@@ -34,6 +34,23 @@ public class VendorController {
                                 .collect(Collectors.toList());
         }
 
+        @GetMapping("/{id}")
+        public ResponseEntity<VendorDTO> getVendorById(@PathVariable Long id) {
+                return vendorService.getVendorById(id)
+                                .map(v -> VendorDTO.builder()
+                                                .id(v.getId())
+                                                .userId(v.getUser().getId())
+                                                .businessName(v.getBusinessName())
+                                                .category(v.getCategory())
+                                                .rating(v.getRating())
+                                                .priceRange(v.getPriceRange())
+                                                .location(v.getLocation())
+                                                .isVerified(v.getIsVerified())
+                                                .build())
+                                .map(ResponseEntity::ok)
+                                .orElse(ResponseEntity.notFound().build());
+        }
+
         @GetMapping("/{id}/services")
         public List<ServiceDTO> getVendorServices(@PathVariable Long id) {
                 return vendorService.getServicesByVendorId(id).stream()
