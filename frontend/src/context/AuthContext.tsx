@@ -44,10 +44,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = (userData: User, token: string) => {
+        console.log("Logging in user:", userData.role);
         setUser(userData);
         setToken(token);
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", token);
+
+        // Use a small delay or ensure state is flushed if needed, 
+        // but router.push should work immediately in Next.js
         router.push("/dashboard");
     };
 

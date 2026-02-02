@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,10 @@ public class VendorService {
 
     public List<Vendor> getAllVendors() {
         return vendorRepository.findAll();
+    }
+
+    public Page<Vendor> getVendorsPaginated(Pageable pageable) {
+        return vendorRepository.findAllWithUser(pageable);
     }
 
     public List<Vendor> getRecommendations(String category) {

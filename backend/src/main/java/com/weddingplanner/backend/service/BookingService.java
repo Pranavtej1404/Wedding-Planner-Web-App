@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,11 +26,23 @@ public class BookingService {
     private com.weddingplanner.backend.repository.ChatRoomRepository chatRoomRepository;
 
     public List<Booking> getBookingsByUserId(Long userId) {
-        return bookingRepository.findByUserId(userId);
+        return bookingRepository.findAllByUserId(userId);
     }
 
     public List<Booking> getBookingsByVendorId(Long vendorId) {
-        return bookingRepository.findByVendorId(vendorId);
+        return bookingRepository.findAllByVendorId(vendorId);
+    }
+
+    public Page<Booking> getBookingsByUserIdPaginated(Long userId, Pageable pageable) {
+        return bookingRepository.findByUserId(userId, pageable);
+    }
+
+    public Page<Booking> getBookingsByVendorIdPaginated(Long vendorId, Pageable pageable) {
+        return bookingRepository.findByVendorId(vendorId, pageable);
+    }
+
+    public Page<Booking> getAllBookingsPaginated(Pageable pageable) {
+        return bookingRepository.findAllWithFetch(pageable);
     }
 
     @Transactional
@@ -66,7 +80,7 @@ public class BookingService {
     }
 
     private boolean hasConflict(Long vendorId, LocalDateTime startTime, LocalDateTime endTime) {
-        List<Booking> existingBookings = bookingRepository.findByVendorId(vendorId);
+        List<Booking> existingBookings = bookingRepository.findAllByVendorId(vendorId);
 
         com.weddingplanner.algorithms.scheduling.IntervalTree tree = new com.weddingplanner.algorithms.scheduling.IntervalTree();
         for (Booking b : existingBookings) {

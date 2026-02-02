@@ -17,9 +17,7 @@ services:
       - "6379:6379"
 
   backend:
-    build:
-      context: ..
-      dockerfile: docker/backend.Dockerfile
+    build: .
     container_name: wp-backend
     ports:
       - "8080:8080"
@@ -31,16 +29,6 @@ services:
     depends_on:
       - mysql
       - redis
-
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: ../docker/frontend.Dockerfile
-    container_name: wp-frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
 
 volumes:
   mysql_data:

@@ -35,79 +35,88 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
-            <div className="w-full max-w-md bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 shadow-2xl">
-                <h1 className="text-3xl font-bold text-white mb-6 text-center">Create Account</h1>
+        <div className="min-h-screen flex items-center justify-center bg-brand-light p-4 animate-in fade-in zoom-in duration-700">
+            <div className="w-full max-w-md bg-white border border-brand-warm rounded-3xl p-8 shadow-2xl hover:shadow-brand-warm/40 transition-shadow">
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-black text-gray-900 mb-2">Create Account</h1>
+                    <p className="text-gray-500">Join our exclusive wedding community</p>
+                </div>
 
-                {error && <div className="bg-red-500/20 border border-red-500 text-red-100 p-3 rounded-lg mb-6 text-sm">
-                    {error}
-                </div>}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-2xl mb-6 text-sm flex items-center gap-3 animate-pulse">
+                        <span>❌</span> {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-slate-300 text-sm font-medium mb-1">Full Name</label>
+                        <label className="block text-gray-700 text-sm font-bold mb-1 ml-1">Full Name</label>
                         <input
                             name="name"
                             type="text"
                             onChange={handleChange}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 px-5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary placeholder:text-gray-400 transition-all"
+                            placeholder="John Doe"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-slate-300 text-sm font-medium mb-1">Email Address</label>
+                        <label className="block text-gray-700 text-sm font-bold mb-1 ml-1">Email Address</label>
                         <input
                             name="email"
                             type="email"
                             onChange={handleChange}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 px-5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary placeholder:text-gray-400 transition-all"
+                            placeholder="you@example.com"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-slate-300 text-sm font-medium mb-1">Password</label>
+                        <label className="block text-gray-700 text-sm font-bold mb-1 ml-1">Password</label>
                         <input
                             name="password"
                             type="password"
                             onChange={handleChange}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 px-5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary placeholder:text-gray-400 transition-all"
+                            placeholder="••••••••"
                             required
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-slate-300 text-sm font-medium mb-1">Role</label>
+                            <label className="block text-gray-700 text-sm font-bold mb-1 ml-1">Role</label>
                             <select
                                 name="role"
                                 onChange={handleChange}
-                                className="w-full bg-slate-800 border border-slate-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 px-5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary transition-all appearance-none"
                             >
                                 <option value="USER">User / Couple</option>
                                 <option value="VENDOR">Vendor</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-slate-300 text-sm font-medium mb-1">Phone</label>
+                            <label className="block text-gray-700 text-sm font-bold mb-1 ml-1">Phone</label>
                             <input
                                 name="phone"
                                 type="text"
                                 onChange={handleChange}
-                                className="w-full bg-slate-800 border border-slate-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 px-5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary placeholder:text-gray-400 transition-all"
+                                placeholder="+1 (555) 000"
                             />
                         </div>
                     </div>
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full mt-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-lg shadow-lg transform active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full mt-4 bg-brand-primary hover:bg-brand-accent text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-primary/30 transform active:scale-95 transition-all duration-300 disabled:opacity-50"
                     >
-                        {loading ? "Registering..." : "Register"}
+                        {loading ? "Registering..." : "Complete Registration"}
                     </button>
                 </form>
 
-                <p className="mt-8 text-center text-slate-400 text-sm">
+                <p className="mt-8 text-center text-gray-500 text-sm">
                     Already have an account?{" "}
-                    <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-medium">
+                    <Link href="/login" className="text-brand-primary hover:text-brand-accent font-bold underline decoration-2 underline-offset-4 transition-colors">
                         Sign In
                     </Link>
                 </p>

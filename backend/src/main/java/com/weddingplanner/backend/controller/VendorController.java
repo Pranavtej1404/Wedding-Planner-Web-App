@@ -5,6 +5,9 @@ import com.weddingplanner.backend.controller.dto.VendorDTO;
 import com.weddingplanner.backend.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +22,11 @@ public class VendorController {
         private VendorService vendorService;
 
         @GetMapping
-        public List<VendorDTO> getAllVendors() {
-                return vendorService.getAllVendors().stream()
+        public ResponseEntity<Page<VendorDTO>> getAllVendors(
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size) {
+                Pageable pageable = PageRequest.of(page, size);
+                Page<VendorDTO> vendors = vendorService.getVendorsPaginated(pageable)
                                 .map(v -> VendorDTO.builder()
                                                 .id(v.getId())
                                                 .userId(v.getUser().getId())
@@ -30,8 +36,8 @@ public class VendorController {
                                                 .priceRange(v.getPriceRange())
                                                 .location(v.getLocation())
                                                 .isVerified(v.getIsVerified())
-                                                .build())
-                                .collect(Collectors.toList());
+                                                .build());
+                return ResponseEntity.ok(vendors);
         }
 
         @GetMapping("/{id}")
@@ -69,8 +75,10 @@ public class VendorController {
         @PostMapping("/{id}/services")
         public ResponseEntity<ServiceDTO> addService(@PathVariable Long id, @RequestBody ServiceDTO serviceDTO) {
                 com.weddingplanner.backend.model.Service service = com.weddingplanner.backend.model.Service.builder()
-                                .title(serviceDTO.getTitle())
-                                .description(serviceDTO.getDescription())
+                                .title(com.weddingplanner.backend.util.SanitizationUtils
+                                                .sanitize(serviceDTO.getTitle()))
+                                .description(com.weddingplanner.backend.util.SanitizationUtils
+                                                .sanitize(serviceDTO.getDescription()))
                                 .price(serviceDTO.getPrice())
                                 .durationMinutes(serviceDTO.getDurationMinutes())
                                 .active(true)

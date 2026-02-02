@@ -1,9 +1,8 @@
-node_modules/
-.next/
-out/
-build/
-.git/
-.gitignore
-.env
-README.md
+node_modules
+.next
+out
+build
+.env*
+.DS_Store
 Dockerfile
+docker-compose.yml

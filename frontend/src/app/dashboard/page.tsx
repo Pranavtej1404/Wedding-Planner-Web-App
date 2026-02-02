@@ -15,6 +15,8 @@ export default function DashboardPage() {
     const router = useRouter();
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const [dataLoading, setDataLoading] = useState(true);
     const [activeChatRoom, setActiveChatRoom] = useState<number | null>(null);
 
@@ -31,12 +33,16 @@ export default function DashboardPage() {
             }
 
             try {
-                const [statsRes, bookingsRes] = await Promise.all([
-                    api.get("/bookings/stats"),
-                    api.get(user?.role === "VENDOR" ? "/bookings/vendor" : "/bookings/my"),
-                ]);
+                const statsPromise = api.get("/bookings/stats");
+                const bookingsPromise = api.get(
+                    `${user?.role === "VENDOR" ? "/bookings/vendor" : "/bookings/my"}?page=${page}&size=5`
+                );
+
+                const [statsRes, bookingsRes] = await Promise.all([statsPromise, bookingsPromise]);
+
                 setStats(statsRes.data);
-                setBookings(bookingsRes.data);
+                setBookings(bookingsRes.data.content);
+                setTotalPages(bookingsRes.data.totalPages);
             } catch (err) {
                 console.error("Dashboard data fetch failed", err);
             } finally {
@@ -45,12 +51,15 @@ export default function DashboardPage() {
         };
 
         if (user) fetchDashboardData();
-    }, [user, isLoading, router]);
+    }, [user, isLoading, router, page]);
 
     if (isLoading || dataLoading) {
         return (
-            <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            <div className="min-h-screen bg-brand-light flex items-center justify-center">
+                <div className="relative w-16 h-16">
+                    <div className="absolute inset-0 border-4 border-brand-warm rounded-full animate-ping opacity-25"></div>
+                    <div className="absolute inset-0 border-4 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
             </div>
         );
     }
@@ -60,15 +69,29 @@ export default function DashboardPage() {
             case "ADMIN":
                 return <AdminDashboard />;
             case "VENDOR":
-                return <VendorDashboard stats={stats} bookings={bookings} onOpenChat={setActiveChatRoom} />;
+                return <VendorDashboard
+                    stats={stats}
+                    bookings={bookings}
+                    page={page}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                    onOpenChat={setActiveChatRoom}
+                />;
             case "USER":
             default:
-                return <UserDashboard stats={stats} bookings={bookings} onOpenChat={setActiveChatRoom} />;
+                return <UserDashboard
+                    stats={stats}
+                    bookings={bookings}
+                    page={page}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                    onOpenChat={setActiveChatRoom}
+                />;
         }
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white p-6 md:p-10">
+        <div className="min-h-screen bg-brand-light text-gray-900 p-6 md:p-10 transition-colors duration-500 animate-in fade-in">
             {renderDashboard()}
 
             {activeChatRoom && (
