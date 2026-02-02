@@ -5,5 +5,4 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # These would point to the backend server's IP/DNS in a multi-server setup
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080/api}
